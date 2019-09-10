@@ -1,10 +1,3 @@
-/*
-  C serialization library, example 3
-  happyponyland.net
-
-  In this example we will serialize a linked list.
-*/
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -33,7 +26,6 @@ void printYearSort(mp3node* start);
 void printForwards(mp3node* start);
 void printBackwards(mp3node* start);
 void save(ser_tra_t* translator, mp3node* start);
-void exit();
 
 
 
@@ -241,8 +233,8 @@ void printNode(mp3node* singleNode){
 }
 /*
  * Return is boolean
- * True: stop running
- * False: Continue running
+ * True: stop running : 1
+ * False: Continue running : 0
  */
 bool processInput(ser_tra_t* translator, mp3node* start){
   //Write a new function, that handles all of the input, and puts it into a String. It handles displaying the input
@@ -277,9 +269,10 @@ bool processInput(ser_tra_t* translator, mp3node* start){
     save(translator,start);
   }else if(userChoice == 10){
     //exit
-    exit();
+    return true;
   }
-  
+
+  return false;
 }
 
 /*
@@ -398,7 +391,7 @@ void insertIndex(mp3node* start){
 
 }
 void insertToEnd(mp3node* start){
-
+v
 }
 void removeIndex(mp3node* start){
 
@@ -419,9 +412,6 @@ void printBackwards(mp3node* start){
 
 }
 void save(ser_tra_t* translator, mp3node* start){
-
-}
-
-void exit(){
+  writeNodeToFile(start,FILE_STORE,translator);
 
 }
