@@ -394,3 +394,34 @@ int indexOf(char* str, char c){
 
   return index;
 }
+void insertIndex(mp3node* start){
+
+}
+void insertToEnd(mp3node* start){
+
+}
+void removeIndex(mp3node* start){
+
+}
+void printTitleFilter(mp3node* start){
+
+}
+void printArtistFilter(mp3node* start){
+
+}
+void printYearSort(mp3node* start){
+
+}
+void printForwards(mp3node* start){
+
+}
+void printBackwards(mp3node* start){
+
+}
+void save(ser_tra_t* translator, mp3node* start){
+
+}
+
+void exit(){
+
+}
