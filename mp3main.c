@@ -24,6 +24,18 @@ void printNode(mp3node* singleNode);
 bool processInput(ser_tra_t* translator, mp3node* start);
 int getUserInput();
 int indexOf(char* str, char c);
+void insertIndex(mp3node* start);
+void insertToEnd(mp3node* start);
+void removeIndex(mp3node* start);
+void printTitleFilter(mp3node* start);
+void printArtistFilter(mp3node* start);
+void printYearSort(mp3node* start);
+void printForwards(mp3node* start);
+void printBackwards(mp3node* start);
+void save(ser_tra_t* translator, mp3node* start);
+void exit();
+
+
 
 char* FILE_STORE = "testserialize.txt";
 struct mp3node
@@ -227,30 +239,45 @@ void printNode(mp3node* singleNode){
   printf("Runtime: %d\n",singleNode->runtime);
   printf("----------------------------------------\n");
 }
+/*
+ * Return is boolean
+ * True: stop running
+ * False: Continue running
+ */
 bool processInput(ser_tra_t* translator, mp3node* start){
   //Write a new function, that handles all of the input, and puts it into a String. It handles displaying the input
   //options, aswell as preventing the user from messing up.
   int userChoice = getUserInput();
   if(userChoice == 1){
     //insert an mp3, with index.
+    insertIndex(start);
   }else if(userChoice == 2){
     //insert an mp3, without index.
+    insertToEnd(start);
   }else if(userChoice == 3){
     //remove mp3, by its index only.
+    removeIndex(start);
   }else if(userChoice == 4){
     //print filter by title
+    printTitleFilter(start);
   }else if(userChoice == 5){
     //print filter by artist name
+    printArtistFilter(start);
   }else if(userChoice == 6){
     //print sorted by year
+    printYearSort(start);
   }else if(userChoice == 7){
     //print list forwards
+    printForwards(start);
   }else if(userChoice == 8){
     //print list backwards
+    printBackwards(start);
   }else if(userChoice == 9){
     //save
+    save(translator,start);
   }else if(userChoice == 10){
     //exit
+    exit();
   }
   
 }
