@@ -413,5 +413,4 @@ void printBackwards(mp3node* start){
 }
 void save(ser_tra_t* translator, mp3node* start){
   writeNodeToFile(start,FILE_STORE,translator);
-
 }
