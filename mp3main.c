@@ -449,6 +449,7 @@ void insertIndex(){
     mp3node* temp = MP3_HEAD;
     MP3_HEAD = newnode;
     newnode->next = temp;
+    temp->prev = newnode;
     return;
   }
   mp3node* tempnode = MP3_HEAD;
@@ -543,10 +544,23 @@ void removeIndex(){
 void printTitleFilter(){
   printf("We will print the list, only those whose title contain the string that you enter.\n");
   char input[140];
+
+
+  printf("What title would you like to search for?\n");
+  input[0] = '\0';
   clearInput();
   fgets(input,140,stdin);
-  printf("Searching for: %s\n",input);
+  while(input[0] == '\0' || input[0] == '\n'){
+    printf("Recieved Bad input, what title would you like to search for?\n");
+    fgets(input,140,stdin);
+  }  
+  
   char* inputcopy = strdup(input);
+  strtok(inputcopy,"\n");
+
+
+  printf("Searching for: %s\n",inputcopy);
+
   mp3node* tmp = MP3_HEAD;
   int i = 0;
   bool found = false;
@@ -566,11 +580,21 @@ void printArtistFilter(){
   printf("We will print the list, only those whose artist name contain the string that you enter.\n");
 
   char input[140];
+
+  printf("What artist would you like to search for?\n");
+  input[0] = '\0';
+
   clearInput();
   fgets(input,140,stdin);
-  printf("Searching for %s\n",input);
+
+  while(input[0] == '\0' || input[0] == '\n'){
+    printf("Recieved bad input, what arist would you like to search for?\n");
+    fgets(input,140,stdin);
+  }
   char* inputcopy = strdup(input);
 
+  strtok(inputcopy,"\n");
+  printf("Searching for: %s\n",inputcopy);
   mp3node* tmp = MP3_HEAD;
 
   int i = 0;
