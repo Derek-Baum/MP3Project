@@ -9,24 +9,26 @@
 typedef struct mp3node mp3node;
 
 char* readFile(char* filename);
-mp3node* readMp3Node(char* filename, ser_tra_t* translator);
-void writeNodeToFile(mp3node* node, char* filename, ser_tra_t* translator);
-void startup(ser_tra_t* translator, mp3node* firstNode);
-void printList(mp3node* list);
-void printNode(mp3node* singleNode);
-bool processInput(ser_tra_t* translator, mp3node* start);
+mp3node* readMp3Node(char* filename);
+void writeNodeToFile();
+void startup();
+void printList();
+void printListBackwards();
+void printNode(mp3node* singleNode,int ind);
+bool processInput();
 int getUserInput();
 int indexOf(char* str, char c);
-void insertIndex(mp3node* start);
-void insertToEnd(mp3node* start);
-void removeIndex(mp3node* start);
-void printTitleFilter(mp3node* start);
-void printArtistFilter(mp3node* start);
-void printYearSort(mp3node* start);
-void printForwards(mp3node* start);
-void printBackwards(mp3node* start);
-void save(ser_tra_t* translator, mp3node* start);
-
+void insertIndex();
+void insertToEnd();
+void removeIndex();
+void printTitleFilter();
+void printArtistFilter();
+void printYearSort();
+void printForwards();
+void printBackwards();
+void save();
+mp3node* buildNodeFromUserInput();
+void clearInput();
 
 
 char* FILE_STORE = "testserialize.txt";
@@ -40,7 +42,8 @@ struct mp3node
   mp3node* prev;
 };
 
-
+mp3node* MP3_HEAD;
+ser_tra_t* translator;
 int main()
 {
   /*
@@ -54,22 +57,19 @@ int main()
     first node and the rest will follow.
   */
   
-  
-  ser_tra_t* tra;
-  mp3node* first;
-
-  startup(tra,first);
+ 
+  startup();
   bool exit = false;
 
-  if(first){
+  if(MP3_HEAD){
     printf("Initial List Loaded From File\nPrinting... \n");
-    printList(first);
+    printList();
   }else{
     printf("No list loaded from file.\n");
   }
 
   while(!exit){
-    exit = processInput(tra,first);
+    exit = processInput();
   }
   
   /*
@@ -134,11 +134,6 @@ int main()
 
   //a = ser_parse(tra,"node", result, NULL);
 
-  if(tra != NULL){
-  
-    printf("Let's see what we got...\n");
-
-  }
   /*
   while (a){
     printf("%s - %s\n", a->name, a->title);
@@ -171,7 +166,7 @@ char* readFile(char* filename){
     }
   return buffer;
 }
-mp3node* readMp3Node(char* filename, ser_tra_t* translator){
+mp3node* readMp3Node(char* filename){
 
   char* out = readFile(filename);
 
@@ -181,21 +176,21 @@ mp3node* readMp3Node(char* filename, ser_tra_t* translator){
   
   return output;
 }
-void writeNodeToFile(mp3node* node, char* filename, ser_tra_t* translator){
+void writeNodeToFile(){
 
   FILE * fp;
   
-  char* raw = ser_ialize(translator,"node",node,NULL,0);
-
+  char* raw = ser_ialize(translator,"node",MP3_HEAD,NULL,0);
+  
   printf("writing to file...\n");
   printf("%s\n",raw);
 
-  fp = fopen(filename, "w");
+  fp = fopen(FILE_STORE, "w");
 
   fprintf(fp,raw);
   fclose(fp);
 }
-void startup(ser_tra_t* translator, mp3node* firstNode){
+void startup(){
   printf("Initializing...\n");
   translator = ser_new_tra("node", sizeof(mp3node), NULL);
   ser_new_field(translator, "string", 0, "name", offsetof(mp3node, name));
@@ -208,67 +203,87 @@ void startup(ser_tra_t* translator, mp3node* firstNode){
 
   if(access(FILE_STORE, F_OK)!= -1){
     printf("We have found a local mp3 list.\nLoading...\n");
-    firstNode = readMp3Node(FILE_STORE, translator);
+    MP3_HEAD = readMp3Node(FILE_STORE);
   }else{
     printf("No list found on file system.\n");
-    firstNode = NULL;
+    MP3_HEAD = NULL;
   }
 
 }
 
-void printList(mp3node* list){
+void printList(){
 
-  mp3node* tmp;
-  *tmp = *list;
+  mp3node* tmp = MP3_HEAD;
+  int i = 0;
   while(tmp){
-    printNode(tmp);
+    printNode(tmp, i);
     tmp = tmp->next;
+    i++;
   }
   
 }
-void printNode(mp3node* singleNode){
+void printNode(mp3node* singleNode, int ind){
   printf("%s - %s (%d)\n",singleNode->title,singleNode->name,singleNode->year);
-  printf("Runtime: %d\n",singleNode->runtime);
+  int minutes = (singleNode->runtime)/60;
+  int seconds = (singleNode->runtime)%60;
+  printf("Time: %d:%d\n",minutes,seconds);
+  printf("Playlist Index: %d\n",ind);
   printf("----------------------------------------\n");
+}
+void printListBackwards(){
+  mp3node* tmp = MP3_HEAD;
+  int i = 0;
+
+  while(tmp->next){
+    i++;
+    tmp = tmp->next;
+  }
+  
+  while(tmp){
+    printNode(tmp,i);
+    tmp = tmp->prev;
+    i--;
+  }  
 }
 /*
  * Return is boolean
  * True: stop running : 1
  * False: Continue running : 0
  */
-bool processInput(ser_tra_t* translator, mp3node* start){
+bool processInput(){
   //Write a new function, that handles all of the input, and puts it into a String. It handles displaying the input
   //options, aswell as preventing the user from messing up.
   int userChoice = getUserInput();
   if(userChoice == 1){
     //insert an mp3, with index.
-    insertIndex(start);
+    insertIndex();
   }else if(userChoice == 2){
     //insert an mp3, without index.
-    insertToEnd(start);
+    insertToEnd();
   }else if(userChoice == 3){
     //remove mp3, by its index only.
-    removeIndex(start);
+    removeIndex();
   }else if(userChoice == 4){
     //print filter by title
-    printTitleFilter(start);
+    printTitleFilter();
   }else if(userChoice == 5){
     //print filter by artist name
-    printArtistFilter(start);
+    printArtistFilter();
   }else if(userChoice == 6){
     //print sorted by year
-    printYearSort(start);
+    printYearSort();
   }else if(userChoice == 7){
     //print list forwards
-    printForwards(start);
+    printForwards();
   }else if(userChoice == 8){
     //print list backwards
-    printBackwards(start);
+    printBackwards();
   }else if(userChoice == 9){
     //save
-    save(translator,start);
+    save();
   }else if(userChoice == 10){
     //exit
+    printf("Exiting without saving.\n");
     return true;
   }
 
@@ -300,7 +315,7 @@ int getUserInput(){
   char* filter = "pirsePIRSE";
   
   printf("Input a character to perform an action.\n");
-  printf("What would you like to do?");
+  printf("What would you like to do?\n");
   printf("P : Print the list.(Many different options.)\n");
   printf("I : Insert an mp3.\n");
   printf("R : Remove an mp3 by its index.\n");
@@ -309,6 +324,7 @@ int getUserInput(){
 
 
   while(strchr(filter, *tmp)==NULL){
+    clearInput();
     fgets(input,2,stdin);
     tmp = input;
   }
@@ -316,7 +332,7 @@ int getUserInput(){
 
 
   if(ind == 0){
-    printf("How would yo like to print the list?\n");
+    printf("How would you like to print the list?\n");
     printf("P : Prints the list forwards.\n");
     printf("B : Prints the list backwards.\n");
     printf("T : Prints the filtered list, filtered by a title.\n");
@@ -329,6 +345,7 @@ int getUserInput(){
     tmp = input;
 
     while(strchr(filter, *tmp)==NULL){
+      clearInput();
       fgets(input,2,stdin);
       tmp = input;
     }
@@ -352,9 +369,13 @@ int getUserInput(){
 
   }else if(ind == 1){
     //insert
-    printf("Input i to insert based on index, any other input will result in insertion to end of list.\n");
-    fgets(input,2,stdin);
-    if(input[0] == 'i' || input[0] == 'I'){
+    printf("Input i to insert based on index, any other input will result in insertion to end of list!\n");
+    char inputTwo[2];
+    inputTwo[0] = 'd';
+    inputTwo[1] = '\0';
+    clearInput();
+    fgets(inputTwo,2,stdin);
+    if(inputTwo[0] == 'i' || inputTwo[0] == 'I'){
       //with index
       output = 1;
     }else{
@@ -384,33 +405,237 @@ int indexOf(char* str, char c){
   }
 
   index = ptr - str;
-
+  
   return index;
 }
-void insertIndex(mp3node* start){
+void insertIndex(){
+  if(MP3_HEAD == NULL){
+    printf("You can only insert to one index, since the list is empty!\nBringing you to insert to end.\n");
+    insertToEnd();
+    return;
+  }
+  //insert the node at tempnodes next. if tempnodes next isn't null, put tempnodes next on new tempnodes next first.
+
+  
+  printf("Inserting a record.\n");
+  mp3node* newnode = buildNodeFromUserInput();
+
+  printf("Pick an index to insert your new record into.\nThese are 0 based indeces, and if your index is too high, the insertion will fail.\n");
+  
+  int uind;
+  clearInput();
+  scanf("%10d",&uind);
+
+  printf("Attempting to insert at index %d.\n",uind);
+
+
+  int i = 0;
+  if(uind == 0){
+    /*
+     * take the new node, set a tmp node to start, make start to point to the new node, set new->next = tmp.
+     */
+    mp3node* temp = MP3_HEAD;
+    MP3_HEAD = newnode;
+    newnode->next = temp;
+    return;
+  }
+  mp3node* tempnode = MP3_HEAD;
+  while(i < (uind-1)){
+    if(tempnode != NULL){
+      tempnode = tempnode->next;
+    }else{
+      printf("The index you input was too large. Check the list and try again.\n");
+      return;
+    }
+    i++;
+  }
+  //test again
+  if(tempnode == NULL){
+    printf("The index you input was too large. Check the list and try again.\n");
+    return;
+  }
+  
+  newnode->prev = tempnode;
+  newnode->next = tempnode->next;
+  tempnode->next = newnode;
+
+  printf("Successfully inserted:\n");
+  printNode(newnode,uind);
+}
+
+  
+void insertToEnd(){
+  printf("Inserting node.\n");
+  mp3node* newnode = buildNodeFromUserInput();
+  int ind = 0;
+  if(MP3_HEAD == NULL){
+    MP3_HEAD = newnode;
+  }else{
+    mp3node* tmpnode = MP3_HEAD;
+    
+    while(tmpnode->next != NULL){
+      tmpnode = tmpnode -> next;
+      ind++;
+    }
+    tmpnode->next = newnode;
+  }
+
+  printf("Successfully inserted record:\n");
+  printNode(newnode,ind);
+}
+void removeIndex(){
+  int uind;
+  clearInput();
+  scanf("%10d",&uind);
+
+  printf("Attempting to remove record at index %d.\n",uind);
+ 
+  if(uind == 0){
+    if(MP3_HEAD != NULL){
+      mp3node* tmp = MP3_HEAD;
+      MP3_HEAD = MP3_HEAD->next;
+      free(tmp);
+      printf("Successfully removed the entry at index 0.\n");
+    }else{
+      printf("List is empty. Can't remove...\n");
+    }
+    return;
+  }else{
+    int i = 0;
+    mp3node* tmpnode = MP3_HEAD;
+    while(i < uind){
+      tmpnode = tmpnode->next;
+      i++;
+    }
+    mp3node* prevnode = tmpnode->prev;
+    mp3node* nextnode = tmpnode->next;
+    if(prevnode != NULL){
+      prevnode->next = nextnode;
+    }
+    if(nextnode != NULL){
+      nextnode->prev = prevnode;
+    }
+    free(tmpnode);
+    printf("Successfully removed the entry at index %d.\n",i);
+  }
+}
+void printTitleFilter(){
+  printf("We will print the list, only those whose title contain the string that you enter.\n");
+  char input[140];
+  clearInput();
+  fgets(input,140,stdin);
+  printf("Searching for: %s\n",input);
+  char* inputcopy = strdup(input);
+  mp3node* tmp = MP3_HEAD;
+  int i = 0;
+  bool found = false;
+  while(tmp){
+    if(strstr(tmp->title,inputcopy) != NULL){
+      printNode(tmp, i);
+      found = true;
+    }
+    tmp = tmp->next;
+    i++;
+  }
+  if(!found){
+    printf("No results found. Consider altering your search.\n");
+  }
+}
+void printArtistFilter(){
+  printf("We will print the list, only those whose artist name contain the string that you enter.\n");
+
+  char input[140];
+  clearInput();
+  fgets(input,140,stdin);
+  printf("Searching for %s\n",input);
+  char* inputcopy = strdup(input);
+
+  mp3node* tmp = MP3_HEAD;
+
+  int i = 0;
+  bool found = false;
+  while(tmp){
+    if(strstr(tmp->name,inputcopy) != NULL){
+      printNode(tmp, i);
+      found = true;
+    }
+    tmp = tmp->next;
+    i++;
+  }
+  if(!found){
+    printf("No results found. Consider altering your search.\n");
+  }
 
 }
-void insertToEnd(mp3node* start){
-
+void printYearSort(){
+  //TODO
 }
-void removeIndex(mp3node* start){
-
+void printForwards(){
+  printf("Printing the mp3 list...\n");
+  printList();
 }
-void printTitleFilter(mp3node* start){
-
+void printBackwards(){
+  printf("Printing the mp3 list backwards...\n");
+  printListBackwards();
 }
-void printArtistFilter(mp3node* start){
-
+void save(){
+  writeNodeToFile();
 }
-void printYearSort(mp3node* start){
+mp3node* buildNodeFromUserInput(){
+  mp3node* newnode;
+  newnode = malloc(sizeof(mp3node));
 
-}
-void printForwards(mp3node* start){
+  printf("First, what is the artist's name?\n");
+  char input[140];
+  input[0] = '\0';
+  clearInput();
+  fgets(input,140,stdin);
+  while(input[0] == '\0'){
+    printf("Bad input, what is the artist's name?\n");
+    clearInput();
+    fgets(input,140,stdin);
+  }
+  newnode->name = strdup(input);
+  strtok(newnode->name, "\n");
+  
+  input[0] = '\0';
+  printf("Next, what is the title of the song?\n");
+  clearInput();
+  fgets(input,140,stdin);
+  while(input[0] == '\0'){
+    printf("Bad input, what is the title of the song?\n");
+    clearInput();
+    fgets(input,140,stdin);
+  }
+  newnode->title = strdup(input);
+  strtok(newnode->title, "\n");
 
-}
-void printBackwards(mp3node* start){
+  printf("Next, what year was the song released?\n");
+  int yearinput = -1;
+  clearInput();
+  scanf("%4d",&yearinput);
+  while(yearinput < 0){
+    printf("Bad input, what year was the song released?\n");
+    clearInput();
+    scanf("%4d",&yearinput);
+  }
+  newnode->year = yearinput;
 
+  printf("Finally, how long (in seconds) is the song?\n");
+
+  int timeinput = -1;
+  clearInput();
+  scanf("%10d",&timeinput);
+  while(timeinput < 0){
+    printf("Bad input, how long (in seconds) is the song?\n");
+    clearInput();
+    scanf("%10d",&timeinput);
+  }
+  newnode->runtime = timeinput;
+
+  return newnode;
 }
-void save(ser_tra_t* translator, mp3node* start){
-  writeNodeToFile(start,FILE_STORE,translator);
+void clearInput(){
+  fseek(stdin,0,SEEK_END);
+  fflush(stdin);
 }
