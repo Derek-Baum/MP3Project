@@ -391,7 +391,7 @@ void insertIndex(mp3node* start){
 
 }
 void insertToEnd(mp3node* start){
-v
+
 }
 void removeIndex(mp3node* start){
 
