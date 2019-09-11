@@ -215,6 +215,7 @@ void printList(){
 
   mp3node* tmp = MP3_HEAD;
   int i = 0;
+  printf("****************************************\n");
   while(tmp){
     printNode(tmp, i);
     tmp = tmp->next;
@@ -228,7 +229,11 @@ void printNode(mp3node* singleNode, int ind){
   int seconds = (singleNode->runtime)%60;
   printf("Time: %d:%d\n",minutes,seconds);
   printf("Playlist Index: %d\n",ind);
-  printf("----------------------------------------\n");
+  if(singleNode->next == NULL){
+    printf("****************************************\n");
+  }else{
+    printf("----------------------------------------\n");
+  }
 }
 void printListBackwards(){
   mp3node* tmp = MP3_HEAD;
@@ -329,6 +334,7 @@ int getUserInput(){
     tmp = input;
   }
   int ind = (indexOf(filter,input[0]) % 5);
+  printf("The index of your input in the PIRSE is: %d.\n",ind);
 
 
   if(ind == 0){
@@ -363,18 +369,24 @@ int getUserInput(){
       //print the list, filtered by an artist name.
       output = 5;
     }else if(ind_print == 4){
-      //prints hte list, sorted by year.
+      //prints the list, sorted by year.
       output = 6;
     }
 
   }else if(ind == 1){
     //insert
-    printf("Input i to insert based on index, any other input will result in insertion to end of list!\n");
+    printf("Would you like to insert with an index, or to the end of the list?\n");
+    printf("I : insert with index.\n");
+    printf("E : insert to end.\n");
     char inputTwo[2];
-    inputTwo[0] = 'd';
+    inputTwo[0] = '\n';
     inputTwo[1] = '\0';
     clearInput();
     fgets(inputTwo,2,stdin);
+    while(inputTwo[0] == '\n'){
+      printf("Please enter input:\n");
+      fgets(inputTwo,2,stdin);
+    }
     if(inputTwo[0] == 'i' || inputTwo[0] == 'I'){
       //with index
       output = 1;
@@ -472,12 +484,15 @@ void insertToEnd(){
     MP3_HEAD = newnode;
   }else{
     mp3node* tmpnode = MP3_HEAD;
-    
+
+    ind = 1;
     while(tmpnode->next != NULL){
       tmpnode = tmpnode -> next;
       ind++;
     }
     tmpnode->next = newnode;
+    newnode->prev = tmpnode;
+    newnode->next = NULL;
   }
 
   printf("Successfully inserted record:\n");
@@ -486,8 +501,14 @@ void insertToEnd(){
 void removeIndex(){
   int uind;
   clearInput();
-  scanf("%10d",&uind);
 
+  printf("Please enter the index you would like to remove.\n");
+  clearInput();
+  scanf("%4d",&uind);
+  while(uind <  0){
+    printf("Recieved Bad input, please enter the index you would like to remove?\n");
+    scanf("%4d",&uind);
+  }
   printf("Attempting to remove record at index %d.\n",uind);
  
   if(uind == 0){
@@ -573,6 +594,7 @@ void printYearSort(){
 void printForwards(){
   printf("Printing the mp3 list...\n");
   printList();
+  
 }
 void printBackwards(){
   printf("Printing the mp3 list backwards...\n");
@@ -590,9 +612,8 @@ mp3node* buildNodeFromUserInput(){
   input[0] = '\0';
   clearInput();
   fgets(input,140,stdin);
-  while(input[0] == '\0'){
-    printf("Bad input, what is the artist's name?\n");
-    clearInput();
+  while(input[0] == '\0' || input[0] == '\n'){
+    printf("Recieved Bad input, what is the artist's name?\n");
     fgets(input,140,stdin);
   }
   newnode->name = strdup(input);
@@ -602,9 +623,8 @@ mp3node* buildNodeFromUserInput(){
   printf("Next, what is the title of the song?\n");
   clearInput();
   fgets(input,140,stdin);
-  while(input[0] == '\0'){
-    printf("Bad input, what is the title of the song?\n");
-    clearInput();
+  while(input[0] == '\0' || input[0] == '\n'){
+    printf("Recieved Bad input, what is the title of the song?\n");
     fgets(input,140,stdin);
   }
   newnode->title = strdup(input);
@@ -614,9 +634,8 @@ mp3node* buildNodeFromUserInput(){
   int yearinput = -1;
   clearInput();
   scanf("%4d",&yearinput);
-  while(yearinput < 0){
-    printf("Bad input, what year was the song released?\n");
-    clearInput();
+  while(yearinput <=  0){
+    printf("Recieved Bad input, what year was the song released?\n");
     scanf("%4d",&yearinput);
   }
   newnode->year = yearinput;
@@ -626,9 +645,8 @@ mp3node* buildNodeFromUserInput(){
   int timeinput = -1;
   clearInput();
   scanf("%10d",&timeinput);
-  while(timeinput < 0){
-    printf("Bad input, how long (in seconds) is the song?\n");
-    clearInput();
+  while(timeinput <= 0){
+    printf("Recieved Bad input, how long (in seconds) is the song?\n");
     scanf("%10d",&timeinput);
   }
   newnode->runtime = timeinput;
