@@ -29,7 +29,8 @@ void printBackwards();
 void save();
 mp3node* buildNodeFromUserInput();
 void clearInput();
-
+void exit_program();
+void free_mp3node();
 
 char* FILE_STORE = "testserialize.txt";
 struct mp3node
@@ -72,80 +73,6 @@ int main()
     exit = processInput();
   }
   
-  /*
-    Populate a short list.
-    a will point to the start of the list.
-  */
-
-  /*
-
-  char tmp[50];
-  char tmptitle[50];
-  mp3node* a;
-  mp3node* b;
-  int i;
-
-  a = NULL;
-
-  for (i = 5; i > 0; i--)
-  {
-    b = malloc(sizeof(mp3node));
-    sprintf(tmp, "node %d", i);
-    sprintf(tmptitle, "title %d", i);
-    b->name = strdup(tmp);
-    b->title = strdup(tmptitle);
-    b->year=2000;
-    b->runtime=10;
-    b->next = a;
-    if(a != NULL)
-      a->prev=b;
-    a = b;
-  }
-
-  */
-  /*
-    Serialize the list.
-
-    This should print the nodes we created above.
-    The last should end with "next NULL;".
-  */
-
-  /*
-  
-  char* result;
-
-  result = ser_ialize(tra, "node", a, NULL, 0);
-
-  printf("Result:\n%s\n", result);
-
-  while (a){
-    b = a->next;
-    free(a->name);
-    free(a->title);
-    free(a);
-    a = b;
-  }
-  */
-
-  /*
-    Now we will read a short list. The input intentionally mixes up
-    the order of the nodes; the serializer will get this right.
-  */
-
-  //a = ser_parse(tra,"node", result, NULL);
-
-  /*
-  while (a){
-    printf("%s - %s\n", a->name, a->title);
-    b = a->next;
-    free(a->name);
-    free(a->title);
-    free(a);
-    a = b;
-  }
-  */
-
- 
   return 0;
 }
 char* readFile(char* filename){
@@ -227,7 +154,12 @@ void printNode(mp3node* singleNode, int ind){
   printf("%s - %s (%d)\n",singleNode->title,singleNode->name,singleNode->year);
   int minutes = (singleNode->runtime)/60;
   int seconds = (singleNode->runtime)%60;
-  printf("Time: %d:%d\n",minutes,seconds);
+  int filler  = 0;
+  if(seconds < 10){
+    printf("Time: %d:%d%d\n",minutes,filler,seconds);
+  }else{
+    printf("Time: %d:%d\n",minutes,seconds);
+  }
   printf("Playlist Index: %d\n",ind);
   if(singleNode->next == NULL){
     printf("****************************************\n");
@@ -288,7 +220,7 @@ bool processInput(){
     save();
   }else if(userChoice == 10){
     //exit
-    printf("Exiting without saving.\n");
+    exit_program();
     return true;
   }
 
@@ -680,4 +612,18 @@ mp3node* buildNodeFromUserInput(){
 void clearInput(){
   fseek(stdin,0,SEEK_END);
   fflush(stdin);
+}
+void exit_program(){
+  printf("Exiting without saving. Goodbye.\n");
+  mp3node *tmp = MP3_HEAD;
+  while(tmp != NULL){
+    mp3node* next = tmp->next;
+    free_mp3node(tmp);
+    tmp = next;
+  }
+}
+void free_mp3node(mp3node* node){
+  free(node->title);
+  free(node->name);
+  free(node);
 }
