@@ -621,6 +621,7 @@ void exit_program(){
     free_mp3node(tmp);
     tmp = next;
   }
+  ser_del_tra(translator);
 }
 void free_mp3node(mp3node* node){
   free(node->title);
