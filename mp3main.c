@@ -113,7 +113,7 @@ void writeNodeToFile(){
 
   fp = fopen(FILE_STORE, "w");
 
-  fprintf(fp,raw);
+  fprintf(fp,"%s",raw);
   fclose(fp);
 }
 void startup(){
@@ -559,6 +559,8 @@ void save(){
 mp3node* buildNodeFromUserInput(){
   mp3node* newnode;
   newnode = malloc(sizeof(mp3node));
+  newnode->next=NULL;
+  newnode->prev=NULL;
 
   printf("First, what is the artist's name?\n");
   char input[140];

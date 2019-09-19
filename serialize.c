@@ -1569,7 +1569,7 @@ bool ser_write_value(ser_job_t * job, const char * type,
 	return false;
       }
 
-      sprintf(tmp, refstr);
+      sprintf(tmp,"%s",refstr);
       free(refstr);
     }
   }
