@@ -23,7 +23,6 @@ void insertToEnd();
 void removeIndex();
 void printTitleFilter();
 void printArtistFilter();
-void printYearSort();
 void printForwards();
 void printBackwards();
 void save();
@@ -207,8 +206,7 @@ bool processInput(){
     //print filter by artist name
     printArtistFilter();
   }else if(userChoice == 6){
-    //print sorted by year
-    printYearSort();
+    //deprecated selection.
   }else if(userChoice == 7){
     //print list forwards
     printForwards();
@@ -266,7 +264,6 @@ int getUserInput(){
     tmp = input;
   }
   int ind = (indexOf(filter,input[0]) % 5);
-  printf("The index of your input in the PIRSE is: %d.\n",ind);
 
 
   if(ind == 0){
@@ -275,9 +272,8 @@ int getUserInput(){
     printf("B : Prints the list backwards.\n");
     printf("T : Prints the filtered list, filtered by a title.\n");
     printf("A : Prints the filtered list, filtered by an artist name.\n");
-    printf("Y : Prints the list, sorted by year.\n");
 
-    filter = "PBTAYpbtay";
+    filter = "PBTApbta";
     input[0] = 'd';
     input[1] = '\0';
     tmp = input;
@@ -287,7 +283,7 @@ int getUserInput(){
       fgets(input,2,stdin);
       tmp = input;
     }
-    int ind_print = (indexOf(filter,input[0]) % 5);
+    int ind_print = (indexOf(filter,input[0]) % 4);
     if(ind_print == 0){
       //print the list forwards
       output = 7;
@@ -300,10 +296,11 @@ int getUserInput(){
     }else if(ind_print == 3){
       //print the list, filtered by an artist name.
       output = 5;
-    }else if(ind_print == 4){
+    }
+    /*else if(ind_print == 4){
       //prints the list, sorted by year.
       output = 6;
-    }
+      }*/
 
   }else if(ind == 1){
     //insert
@@ -364,6 +361,9 @@ void insertIndex(){
   printf("Inserting a record.\n");
   mp3node* newnode = buildNodeFromUserInput();
 
+  if(newnode == NULL){
+    return;
+  }
   printf("Pick an index to insert your new record into.\nThese are 0 based indeces, and if your index is too high, the insertion will fail.\n");
   
   int uind;
@@ -544,9 +544,6 @@ void printArtistFilter(){
   }
 
 }
-void printYearSort(){
-  //TODO
-}
 void printForwards(){
   printf("Printing the mp3 list...\n");
   printList();
@@ -591,8 +588,8 @@ mp3node* buildNodeFromUserInput(){
   clearInput();
   scanf("%4d",&yearinput);
   while(yearinput <=  0){
-    printf("Recieved Bad input, what year was the song released?\n");
-    scanf("%4d",&yearinput);
+    printf("Recieved Bad input, back to main menu.");
+    return NULL;
   }
   newnode->year = yearinput;
 
