@@ -592,6 +592,8 @@ finish:
   for (i = 1; i < job.things; i++)
   {
     free(job.holder[i].replace_field);
+    printf("WE ARE CURRENTLY FREEING REPLACE FIELDS.\nHERE IS THE TYPE THAT SHOWS HERE: %s",job.holder[i].type);
+    free(job.holder[i].type);
   }
 
   free(job.holder);
@@ -607,6 +609,7 @@ finish:
 error_cleanup:
   failed = true;
   goto finish;
+
 }
 
 
@@ -663,6 +666,7 @@ void ser_list_holders(ser_job_t * job)
 */
 void ser_ptr_overlap(ser_job_t * job)
 {
+  printf("WE ARE IN SER_PTR_OVERLAP\n");
   size_t things;
   size_t i;
 
@@ -2042,7 +2046,7 @@ void * ser_parse(ser_tra_t * first_tra, const char * expected_type,
       if (r == ser_tok_open)
       {
 	/* We need to keep this around to preserve type safety for references.*/
-	job.holder[id].type = strdup(type);
+	//job.holder[id].type = strdup(type);
 
 	if (ser_is_primitive(type))
 	{
@@ -2101,14 +2105,17 @@ count_stuff:
 
 cleanup:
 
+  printf("I AM IN CLEANUP OF SER_PARSE\n");
   ser_del_subst_ptrs(&job);
 
   if (job.allocated)
   {
     size_t i;
 
-    for (i = 1; i < job.allocated; i++)
+    for (i = 1; i < job.allocated; i++){
       free(job.holder[i].type);
+      printf("JOB ALLOCATED LOOP\n");
+    }
   }
 
   free(job.holder);
@@ -2859,7 +2866,7 @@ void ser_del_subst_ptrs(ser_job_t * job)
   }
 
   job->first_sptr = NULL;
-  
+  //TAG HERE TO FIX
   return;
 }
 

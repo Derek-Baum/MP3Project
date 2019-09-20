@@ -115,6 +115,7 @@ void writeNodeToFile(){
 
   fprintf(fp,"%s",raw);
   fclose(fp);
+  free(raw);
 }
 void startup(){
   printf("Initializing...\n");

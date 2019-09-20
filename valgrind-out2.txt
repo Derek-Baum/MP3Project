@@ -1,0 +1,150 @@
+==783== Memcheck, a memory error detector
+==783== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==783== Using Valgrind-3.13.0 and LibVEX; rerun with -h for copyright info
+==783== Command: ./mp3valgrind.o
+==783== Parent PID: 7
+==783== 
+--783-- 
+--783-- Valgrind options:
+--783--    --leak-check=full
+--783--    --show-leak-kinds=all
+--783--    --track-origins=yes
+--783--    --verbose
+--783--    --log-file=valgrind-out2.txt
+--783-- Contents of /proc/version:
+--783--   Linux version 4.4.0-18362-Microsoft (Microsoft@Microsoft.com) (gcc version 5.4.0 (GCC) ) #1-Microsoft Mon Mar 18 12:02:00 PST 2019
+--783-- 
+--783-- Arch and hwcaps: AMD64, LittleEndian, amd64-cx16-lzcnt-rdtscp-sse3-avx-avx2-bmi
+--783-- Page sizes: currently 4096, max supported 4096
+--783-- Valgrind library directory: /usr/lib/valgrind
+--783-- Reading syms from /home/dgbaum/schoolwork/cisc361/mp3/MP3Project/mp3valgrind.o
+--783-- Reading syms from /lib/x86_64-linux-gnu/ld-2.27.so
+--783--   Considering /lib/x86_64-linux-gnu/ld-2.27.so ..
+--783--   .. CRC mismatch (computed 1b7c895e wanted 2943108a)
+--783--   Considering /usr/lib/debug/lib/x86_64-linux-gnu/ld-2.27.so ..
+--783--   .. CRC is valid
+--783-- Reading syms from /usr/lib/valgrind/memcheck-amd64-linux
+--783--   Considering /usr/lib/valgrind/memcheck-amd64-linux ..
+--783--   .. CRC mismatch (computed c25f395c wanted 0a9602a8)
+--783--    object doesn't have a symbol table
+--783--    object doesn't have a dynamic symbol table
+--783-- Scheduler: using generic scheduler lock implementation.
+--783-- Reading suppressions file: /usr/lib/valgrind/default.supp
+==783== embedded gdbserver: reading from /tmp/vgdb-pipe-from-vgdb-to-783-by-dgbaum-on-???
+==783== embedded gdbserver: writing to   /tmp/vgdb-pipe-to-vgdb-from-783-by-dgbaum-on-???
+==783== embedded gdbserver: shared mem   /tmp/vgdb-pipe-shared-mem-vgdb-783-by-dgbaum-on-???
+==783== 
+==783== TO CONTROL THIS PROCESS USING vgdb (which you probably
+==783== don't want to do, unless you know exactly what you're doing,
+==783== or are doing some strange experiment):
+==783==   /usr/lib/valgrind/../../bin/vgdb --pid=783 ...command...
+==783== 
+==783== TO DEBUG THIS PROCESS USING GDB: start GDB like this
+==783==   /path/to/gdb ./mp3valgrind.o
+==783== and then give GDB the following command
+==783==   target remote | /usr/lib/valgrind/../../bin/vgdb --pid=783
+==783== --pid is optional if only one valgrind process is running
+==783== 
+==783== error calling PR_SET_PTRACER, vgdb might block
+--783-- REDIR: 0x401f2f0 (ld-linux-x86-64.so.2:strlen) redirected to 0x58060901 (???)
+--783-- REDIR: 0x401f0d0 (ld-linux-x86-64.so.2:index) redirected to 0x5806091b (???)
+--783-- Reading syms from /usr/lib/valgrind/vgpreload_core-amd64-linux.so
+--783--   Considering /usr/lib/valgrind/vgpreload_core-amd64-linux.so ..
+--783--   .. CRC mismatch (computed 4b63d83e wanted 670599e6)
+--783--    object doesn't have a symbol table
+--783-- Reading syms from /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so
+--783--   Considering /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so ..
+--783--   .. CRC mismatch (computed a4b37bee wanted 8ad4dc94)
+--783--    object doesn't have a symbol table
+==783== WARNING: new redirection conflicts with existing -- ignoring it
+--783--     old: 0x0401f2f0 (strlen              ) R-> (0000.0) 0x58060901 ???
+--783--     new: 0x0401f2f0 (strlen              ) R-> (2007.0) 0x04c32db0 strlen
+--783-- REDIR: 0x401d360 (ld-linux-x86-64.so.2:strcmp) redirected to 0x4c33ee0 (strcmp)
+--783-- REDIR: 0x401f830 (ld-linux-x86-64.so.2:mempcpy) redirected to 0x4c374f0 (mempcpy)
+--783-- Reading syms from /lib/x86_64-linux-gnu/libc-2.27.so
+--783--   Considering /lib/x86_64-linux-gnu/libc-2.27.so ..
+--783--   .. CRC mismatch (computed b1c74187 wanted 042cc048)
+--783--   Considering /usr/lib/debug/lib/x86_64-linux-gnu/libc-2.27.so ..
+--783--   .. CRC is valid
+--783-- REDIR: 0x4edac70 (libc.so.6:memmove) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--783-- REDIR: 0x4ed9d40 (libc.so.6:strncpy) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--783-- REDIR: 0x4edaf50 (libc.so.6:strcasecmp) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--783-- REDIR: 0x4ed9790 (libc.so.6:strcat) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--783-- REDIR: 0x4ed9d70 (libc.so.6:rindex) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--783-- REDIR: 0x4edc7c0 (libc.so.6:rawmemchr) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--783-- REDIR: 0x4edade0 (libc.so.6:mempcpy) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--783-- REDIR: 0x4edac10 (libc.so.6:bcmp) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--783-- REDIR: 0x4ed9d00 (libc.so.6:strncmp) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--783-- REDIR: 0x4ed9800 (libc.so.6:strcmp) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--783-- REDIR: 0x4edad40 (libc.so.6:memset) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--783-- REDIR: 0x4ef80f0 (libc.so.6:wcschr) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--783-- REDIR: 0x4ed9ca0 (libc.so.6:strnlen) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--783-- REDIR: 0x4ed9870 (libc.so.6:strcspn) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--783-- REDIR: 0x4edafa0 (libc.so.6:strncasecmp) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--783-- REDIR: 0x4ed9840 (libc.so.6:strcpy) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--783-- REDIR: 0x4edb0e0 (libc.so.6:memcpy@@GLIBC_2.14) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--783-- REDIR: 0x4ed9da0 (libc.so.6:strpbrk) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--783-- REDIR: 0x4ed97c0 (libc.so.6:index) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--783-- REDIR: 0x4ed9c70 (libc.so.6:strlen) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--783-- REDIR: 0x4ee46c0 (libc.so.6:memrchr) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--783-- REDIR: 0x4edaff0 (libc.so.6:strcasecmp_l) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--783-- REDIR: 0x4edabe0 (libc.so.6:memchr) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--783-- REDIR: 0x4ef8eb0 (libc.so.6:wcslen) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--783-- REDIR: 0x4eda050 (libc.so.6:strspn) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--783-- REDIR: 0x4edaf20 (libc.so.6:stpncpy) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--783-- REDIR: 0x4edaef0 (libc.so.6:stpcpy) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--783-- REDIR: 0x4edc7f0 (libc.so.6:strchrnul) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--783-- REDIR: 0x4edb040 (libc.so.6:strncasecmp_l) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--783-- REDIR: 0x4edab20 (libc.so.6:strstr) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--783-- REDIR: 0x4fca3c0 (libc.so.6:__strrchr_avx2) redirected to 0x4c32730 (rindex)
+--783-- REDIR: 0x4fca590 (libc.so.6:__strlen_avx2) redirected to 0x4c32cf0 (strlen)
+--783-- REDIR: 0x4ed3070 (libc.so.6:malloc) redirected to 0x4c2faa0 (malloc)
+--783-- REDIR: 0x4fcaad0 (libc.so.6:__memcpy_avx_unaligned_erms) redirected to 0x4c366e0 (memmove)
+--783-- REDIR: 0x4fa5d60 (libc.so.6:__strcmp_ssse3) redirected to 0x4c33da0 (strcmp)
+--783-- REDIR: 0x4fcaab0 (libc.so.6:__mempcpy_avx_unaligned_erms) redirected to 0x4c37130 (mempcpy)
+--783-- REDIR: 0x4eda590 (libc.so.6:__GI_strstr) redirected to 0x4c37760 (__strstr_sse2)
+--783-- REDIR: 0x4ed3950 (libc.so.6:free) redirected to 0x4c30cd0 (free)
+--783-- REDIR: 0x4ed4c30 (libc.so.6:realloc) redirected to 0x4c31cb0 (realloc)
+--783-- REDIR: 0x4fc6f80 (libc.so.6:__strcasecmp_avx) redirected to 0x4c335f0 (strcasecmp)
+--783-- REDIR: 0x4ed6030 (libc.so.6:calloc) redirected to 0x4c31a70 (calloc)
+--783-- REDIR: 0x4fc9fa0 (libc.so.6:__strchr_avx2) redirected to 0x4c32950 (index)
+--783-- REDIR: 0x4fca1d0 (libc.so.6:__strchrnul_avx2) redirected to 0x4c37020 (strchrnul)
+--783-- REDIR: 0x4fb9100 (libc.so.6:__strncpy_ssse3) redirected to 0x4c32fb0 (strncpy)
+--783-- REDIR: 0x4fb7950 (libc.so.6:__strcpy_ssse3) redirected to 0x4c32dd0 (strcpy)
+--783-- REDIR: 0x4fc6420 (libc.so.6:__memchr_avx2) redirected to 0x4c33f80 (memchr)
+==783== 
+==783== HEAP SUMMARY:
+==783==     in use at exit: 15 bytes in 3 blocks
+==783==   total heap usage: 234 allocs, 231 frees, 59,311 bytes allocated
+==783== 
+==783== Searching for pointers to 3 not-freed blocks
+==783== Checked 69,224 bytes
+==783== 
+==783== 5 bytes in 1 blocks are definitely lost in loss record 1 of 2
+==783==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==783==    by 0x4ED99B9: strdup (strdup.c:42)
+==783==    by 0x10B1FA: ser_ialize (serialize.c:534)
+==783==    by 0x109427: writeNodeToFile (mp3main.c:109)
+==783==    by 0x10A362: save (mp3main.c:558)
+==783==    by 0x109879: processInput (mp3main.c:219)
+==783==    by 0x1092CB: main (mp3main.c:72)
+==783== 
+==783== 10 bytes in 2 blocks are definitely lost in loss record 2 of 2
+==783==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==783==    by 0x4ED99B9: strdup (strdup.c:42)
+==783==    by 0x10C9ED: ser_follow_ptrs (serialize.c:1375)
+==783==    by 0x10B244: ser_ialize (serialize.c:546)
+==783==    by 0x109427: writeNodeToFile (mp3main.c:109)
+==783==    by 0x10A362: save (mp3main.c:558)
+==783==    by 0x109879: processInput (mp3main.c:219)
+==783==    by 0x1092CB: main (mp3main.c:72)
+==783== 
+==783== LEAK SUMMARY:
+==783==    definitely lost: 15 bytes in 3 blocks
+==783==    indirectly lost: 0 bytes in 0 blocks
+==783==      possibly lost: 0 bytes in 0 blocks
+==783==    still reachable: 0 bytes in 0 blocks
+==783==         suppressed: 0 bytes in 0 blocks
+==783== 
+==783== ERROR SUMMARY: 2 errors from 2 contexts (suppressed: 0 from 0)
+==783== ERROR SUMMARY: 2 errors from 2 contexts (suppressed: 0 from 0)
