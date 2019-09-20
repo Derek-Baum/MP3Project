@@ -1,3 +1,4 @@
+
 /*
   serialize.c
   C serialization library
@@ -16,8 +17,7 @@
   Permission is granted to anyone to use this software for any
   purpose, including commercial applications, and to alter it and
   redistribute it freely, subject to the following restrictions:
-
-  1. The origin of this software must not be misrepresented; you must
+y  1. The origin of this software must not be misrepresented; you must
      not claim that you wrote the original software. If you use this
      software in a product, an acknowledgment in the product
      documentation would be appreciated but is not required.
@@ -592,7 +592,6 @@ finish:
   for (i = 1; i < job.things; i++)
   {
     free(job.holder[i].replace_field);
-    printf("WE ARE CURRENTLY FREEING REPLACE FIELDS.\nHERE IS THE TYPE THAT SHOWS HERE: %s",job.holder[i].type);
     free(job.holder[i].type);
   }
 
@@ -666,7 +665,6 @@ void ser_list_holders(ser_job_t * job)
 */
 void ser_ptr_overlap(ser_job_t * job)
 {
-  printf("WE ARE IN SER_PTR_OVERLAP\n");
   size_t things;
   size_t i;
 
@@ -2105,7 +2103,6 @@ count_stuff:
 
 cleanup:
 
-  printf("I AM IN CLEANUP OF SER_PARSE\n");
   ser_del_subst_ptrs(&job);
 
   if (job.allocated)
@@ -2114,7 +2111,6 @@ cleanup:
 
     for (i = 1; i < job.allocated; i++){
       free(job.holder[i].type);
-      printf("JOB ALLOCATED LOOP\n");
     }
   }
 

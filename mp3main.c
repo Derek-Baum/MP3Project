@@ -5,6 +5,17 @@
 #include <stdbool.h>
 #include "serialize.h"
 
+/*
+ * For this project I used a serialization library that I found on the internet.
+ * The only purpose it serves is to save and load the mp3 list
+ * However, the ser_ialize() function, has a memory leak.
+ * All of the code for the actual assignment, should not.
+ * The memory leak caused by ser_ialize() will be in a .txt file,
+ * "ser_ializeleaks-valgrind.txt", the leak amount scales linearly with
+ * the number of nodes saved with the ser_ialize() function.
+ * 'https://github.com/Derek-Baum/MP3Project'
+ */
+
 
 typedef struct mp3node mp3node;
 
@@ -30,8 +41,10 @@ mp3node* buildNodeFromUserInput();
 void clearInput();
 void exit_program();
 void free_mp3node();
+void initializeTranslator();
 
-char* FILE_STORE = "testserialize.txt";
+
+char* FILE_STORE = "MP3_SERIALIZED.txt";
 struct mp3node
 {
   char* name;
@@ -47,7 +60,7 @@ ser_tra_t* translator;
 int main()
 {
   /*
-    Set up the translator.
+    Set up the translator in startup, and which then loads from the file.
     
     Note that the third argument to ser_new_field is 1; this will make
     the translator treat this field as a pointer to another structure.
@@ -119,15 +132,9 @@ void writeNodeToFile(){
 }
 void startup(){
   printf("Initializing...\n");
-  translator = ser_new_tra("node", sizeof(mp3node), NULL);
-  ser_new_field(translator, "string", 0, "name", offsetof(mp3node, name));
-  ser_new_field(translator, "string", 0, "title", offsetof(mp3node, title));
-  ser_new_field(translator, "int", 0, "year", offsetof(mp3node, year));
-  ser_new_field(translator, "int", 0, "runtime", offsetof(mp3node, runtime));
-  ser_new_field(translator, "node",   1, "next",  offsetof(mp3node, next));
-  ser_new_field(translator, "node",   1, "prev", offsetof(mp3node, prev));
 
-
+  initializeTranslator();
+  
   if(access(FILE_STORE, F_OK)!= -1){
     printf("We have found a local mp3 list.\nLoading...\n");
     MP3_HEAD = readMp3Node(FILE_STORE);
@@ -136,6 +143,17 @@ void startup(){
     MP3_HEAD = NULL;
   }
 
+  ser_del_tra(translator);
+
+}
+void initializeTranslator(){
+  translator = ser_new_tra("node", sizeof(mp3node), NULL);
+  ser_new_field(translator, "string", 0, "name", offsetof(mp3node, name));
+  ser_new_field(translator, "string", 0, "title", offsetof(mp3node, title));
+  ser_new_field(translator, "int", 0, "year", offsetof(mp3node, year));
+  ser_new_field(translator, "int", 0, "runtime", offsetof(mp3node, runtime));
+  ser_new_field(translator, "node",   1, "next",  offsetof(mp3node, next));
+  ser_new_field(translator, "node",   1, "prev", offsetof(mp3node, prev));
 }
 
 void printList(){
@@ -306,6 +324,7 @@ int getUserInput(){
   }else if(ind == 1){
     //insert
     printf("Would you like to insert with an index, or to the end of the list?\n");
+    printf("NOTE: if you insert anything other than i, or I, we will assume you are inserting at the end.\n");
     printf("I : insert with index.\n");
     printf("E : insert to end.\n");
     char inputTwo[2];
@@ -360,17 +379,23 @@ void insertIndex(){
 
   
   printf("Inserting a record.\n");
-  mp3node* newnode = buildNodeFromUserInput();
+  mp3node* newnode;
+  newnode = buildNodeFromUserInput();
 
   if(newnode == NULL){
     return;
   }
   printf("Pick an index to insert your new record into.\nThese are 0 based indeces, and if your index is too high, the insertion will fail.\n");
   
+  
   int uind;
   clearInput();
-  scanf("%10d",&uind);
 
+  if(scanf("%10d",&uind) != 1){
+    printf("we failed to get the index. going back to main menu.\n");
+    clearInput();
+    return;
+  }
   printf("Attempting to insert at index %d.\n",uind);
 
 
@@ -438,10 +463,12 @@ void removeIndex(){
 
   printf("Please enter the index you would like to remove.\n");
   clearInput();
-  scanf("%4d",&uind);
-  while(uind <  0){
-    printf("Recieved Bad input, please enter the index you would like to remove?\n");
-    scanf("%4d",&uind);
+
+
+  if(scanf("%4d",&uind)!=1){
+    printf("Scanf failed. Returning to main menu.\n");
+    clearInput();
+    return;
   }
   printf("Attempting to remove record at index %d.\n",uind);
  
@@ -449,7 +476,7 @@ void removeIndex(){
     if(MP3_HEAD != NULL){
       mp3node* tmp = MP3_HEAD;
       MP3_HEAD = MP3_HEAD->next;
-      free(tmp);
+      free_mp3node(tmp);
       printf("Successfully removed the entry at index 0.\n");
     }else{
       printf("List is empty. Can't remove...\n");
@@ -470,7 +497,7 @@ void removeIndex(){
     if(nextnode != NULL){
       nextnode->prev = prevnode;
     }
-    free(tmpnode);
+    free_mp3node(tmpnode);
     printf("Successfully removed the entry at index %d.\n",i);
   }
 }
@@ -555,7 +582,9 @@ void printBackwards(){
   printListBackwards();
 }
 void save(){
+  initializeTranslator();
   writeNodeToFile();
+  ser_del_tra(translator);
 }
 mp3node* buildNodeFromUserInput(){
   mp3node* newnode;
@@ -587,23 +616,22 @@ mp3node* buildNodeFromUserInput(){
   strtok(newnode->title, "\n");
 
   printf("Next, what year was the song released?\n");
-  int yearinput = -1;
+  int yearinput;
   clearInput();
-  scanf("%4d",&yearinput);
-  while(yearinput <=  0){
-    printf("Recieved Bad input, back to main menu.");
+
+  if(scanf("%4d",&yearinput) != 1){
+    printf("Scanf failed, returning to main menu.\n");
+    clearInput();
     return NULL;
   }
-  newnode->year = yearinput;
-
   printf("Finally, how long (in seconds) is the song?\n");
 
-  int timeinput = -1;
+  int timeinput;
   clearInput();
-  scanf("%10d",&timeinput);
-  while(timeinput <= 0){
-    printf("Recieved Bad input, how long (in seconds) is the song?\n");
-    scanf("%10d",&timeinput);
+  if(scanf("%4d",&timeinput)!=1){
+    printf("Scanf failed, returning to main menu.\n");
+    clearInput();
+    return NULL;
   }
   newnode->runtime = timeinput;
 
@@ -621,7 +649,6 @@ void exit_program(){
     free_mp3node(tmp);
     tmp = next;
   }
-  ser_del_tra(translator);
 }
 void free_mp3node(mp3node* node){
   free(node->title);
