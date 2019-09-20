@@ -624,6 +624,7 @@ mp3node* buildNodeFromUserInput(){
     clearInput();
     return NULL;
   }
+  newnode->year = yearinput;
   printf("Finally, how long (in seconds) is the song?\n");
 
   int timeinput;
